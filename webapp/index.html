@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Find the nearest evacuation center in the Philippines during emergencies and disasters">
+    <meta name="keywords" content="evacuation, disaster, Philippines, emergency, shelter, typhoon, earthquake">
+    <meta name="author" content="EvacuFinder PH">
+    
+    <!-- PWA -->
+    <meta name="theme-color" content="#2563eb">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="EvacuFinder PH - Find Nearest Evacuation Centers">
+    <meta property="og:description" content="Quickly locate the nearest evacuation center during emergencies in the Philippines">
+    <meta property="og:type" content="website">
+    
+    <title>EvacuFinder PH - Find Nearest Evacuation Centers</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>EvacuFinder PH</h2>
+            <div class="loading-spinner"></div>
+            <p>Loading evacuation centers...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>EvacuFinder PH</span>
+            </div>
+            <div class="header-actions">
+                <button id="info-btn" class="icon-btn" title="About">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+                <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Find Evacuation Centers</h2>
+                <button id="sidebar-toggle" class="icon-btn mobile-only">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="search-section">
+                <!-- Location Button -->
+                <button id="locate-btn" class="locate-btn">
+                    <i class="fas fa-location-crosshairs"></i>
+                    <span>Find Nearest Centers</span>
+                </button>
+
+                <!-- Search Box -->
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search by name or location...">
+                </div>
+
+                <!-- Recent Searches -->
+                <div id="recent-searches" class="recent-searches" style="display: none;">
+                    <div class="recent-searches-header">
+                        <span>Recent Searches</span>
+                        <button id="clear-searches-btn" class="clear-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="recent-searches-list" class="recent-searches-list"></div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="province-filter">
+                            <i class="fas fa-map-marked-alt"></i>
+                            Province
+                        </label>
+                        <select id="province-filter">
+                            <option value="">All Provinces</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="type-filter">
+                            <i class="fas fa-building"></i>
+                            Type
+                        </label>
+                        <select id="type-filter">
+                            <option value="">All Types</option>
+                            <option value="Barangay Hall">Barangay Hall</option>
+                            <option value="Campus">Campus</option>
+                            <option value="Church">Church</option>
+                            <option value="Field">Field</option>
+                            <option value="Hospital">Hospital</option>
+                            <option value="Shelter">Shelter</option>
+                            <option value="Sports Center">Sports Center</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-centers">0</div>
+                        <div class="stat-label">Total Centers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="visible-centers">0</div>
+                        <div class="stat-label">Showing</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results List -->
+            <div class="results-section">
+                <!-- Tabs -->
+                <div class="results-tabs">
+                    <button class="results-tab active" data-tab="all">
+                        <i class="fas fa-list"></i>
+                        <span>All Centers</span>
+                    </button>
+                    <button class="results-tab" data-tab="favorites">
+                        <i class="fas fa-star"></i>
+                        <span>Favorites (<span id="favorites-count">0</span>)</span>
+                    </button>
+                </div>
+
+                <!-- Favorites Management (visible when on favorites tab) -->
+                <div id="favorites-management" class="favorites-management" style="display: none;">
+                    <button id="clear-favorites-btn" class="favorites-btn">
+                        <i class="fas fa-trash"></i>
+                        Clear All
+                    </button>
+                    <button id="export-favorites-btn" class="favorites-btn">
+                        <i class="fas fa-download"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <!-- Route Planning Controls -->
+                <div class="route-planning-controls">
+                    <button id="route-mode-toggle" class="route-mode-btn">
+                        <i class="fas fa-route"></i>
+                        <span>Select for Route</span>
+                    </button>
+                    <button id="plan-route-btn" class="plan-route-btn" style="display: none;" disabled>
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Plan Route (<span id="selected-count">0</span>)</span>
+                    </button>
+                </div>
+
+                <h3 class="results-header">
+                    <i class="fas fa-list"></i>
+                    Evacuation Centers
+                </h3>
+                <div id="results-list" class="results-list">
+                    <!-- Results will be dynamically inserted here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <div class="map-container">
+            <div id="map"></div>
+            
+            <!-- Floating Action Button -->
+            <button id="mobile-sidebar-toggle" class="fab mobile-only">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Current Location Marker -->
+            <div id="user-location-info" class="user-location-info" style="display: none;">
+                <i class="fas fa-location-dot"></i>
+                <span>Your Location</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-shield-alt"></i>
+                    About EvacuFinder PH
+                </h2>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong>EvacuFinder PH</strong> helps you quickly locate the nearest evacuation centers 
+                    across the Philippines during emergencies and natural disasters.
+                </p>
+                
+                <h3>Features</h3>
+                <ul>
+                    <li><i class="fas fa-location-crosshairs"></i> GPS-based location tracking</li>
+                    <li><i class="fas fa-map"></i> Interactive map with 1,500+ centers</li>
+                    <li><i class="fas fa-filter"></i> Filter by province and type</li>
+                    <li><i class="fas fa-mobile-alt"></i> Mobile-friendly design</li>
+                    <li><i class="fas fa-directions"></i> Get directions to any center</li>
+                </ul>
+
+                <h3>Data Source</h3>
+                <p>
+                    Evacuation center data is sourced from <strong>OpenStreetMap</strong> (OSM). 
+                    Please verify information with local authorities during actual emergencies.
+                </p>
+
+                <h3>Emergency Hotlines</h3>
+                <div class="hotlines">
+                    <div class="hotline-item">
+                        <strong>NDRRMC:</strong> <a href="tel:911">911</a>
+                    </div>
+                    <div class="hotline-item">
+                        <strong>Red Cross:</strong> <a href="tel:143">143</a>
+                    </div>
+                    <div class="hotline-item">
+                        <strong>PAGASA:</strong> <a href="tel:434-0294">434-0294</a>
+                    </div>
+                </div>
+
+                <div class="disclaimer">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Disclaimer:</strong> This app is for informational purposes only. 
+                    Always follow official government advisories during disasters.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="detail-name">Center Name</h2>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="detail-body">
+                <!-- Details will be dynamically inserted -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

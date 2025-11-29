@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_91c4223e61737ef72d63bb33665313aa {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+</head>
+<body>
+    
+    
+    <div style="position: fixed; 
+                bottom: 50px; right: 50px; width: 220px; height: auto; 
+                background-color: white; border:2px solid grey; z-index:9999; 
+                font-size:14px; padding: 10px; border-radius: 5px;
+                box-shadow: 2px 2px 6px rgba(0,0,0,0.3);">
+        <h4 style="margin-top: 0;">Evacuation Center Types</h4>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:blue"></i> Barangay Hall</p>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:green"></i> Campus</p>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:purple"></i> Church</p>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:orange"></i> Field</p>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:red"></i> Hospital</p>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:darkblue"></i> Shelter</p>
+        <p style="margin: 5px 0;"><i class="fa fa-map-marker" style="color:lightgreen"></i> Sports Center</p>
+    </div>
+    
+    
+            <div class="folium-map" id="map_91c4223e61737ef72d63bb33665313aa" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_91c4223e61737ef72d63bb33665313aa = L.map(
+                "map_91c4223e61737ef72d63bb33665313aa",
+                {
+                    center: [8.4823, 124.6478],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_6a16f39bf42bd594b926295729d4b28a = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_6a16f39bf42bd594b926295729d4b28a.addTo(map_91c4223e61737ef72d63bb33665313aa);
+        
+    
+            var marker_45ccab7caf20b91ffc736137a3917d97 = L.marker(
+                [8.494341040207374, 124.64419587096158],
+                {
+}
+            ).addTo(map_91c4223e61737ef72d63bb33665313aa);
+        
+    
+            var icon_08929a51088ae9b8aeb63e5e0e9689ed = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "darkblue",
+  "iconColor": "white",
+  "icon": "shield",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a13b36371015cd9384940979c7d58a99 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f80a84c46432ad9ea7aa5b1c83c8744b = $(`<div id="html_f80a84c46432ad9ea7aa5b1c83c8744b" style="width: 100.0%; height: 100.0%;">         <div style="font-family: Arial; min-width: 200px;">             <h4 style="margin: 0 0 10px 0; color: #2c3e50;">Calabrian Children's Foundation Incorporated</h4>             <table style="width: 100%; font-size: 12px;">                 <tr>                     <td style="font-weight: bold; padding: 2px;">Type:</td>                     <td style="padding: 2px;">Shelter</td>                 </tr>                          <tr>                     <td style="font-weight: bold; padding: 2px;">City:</td>                     <td style="padding: 2px;">Cagayan De Oro</td>                 </tr>                              <tr>                     <td style="font-weight: bold; padding: 2px;">Province:</td>                     <td style="padding: 2px;">Misamis Oriental</td>                 </tr>                          </table>         </div>         </div>`)[0];
+                popup_a13b36371015cd9384940979c7d58a99.setContent(html_f80a84c46432ad9ea7aa5b1c83c8744b);
+            
+        
+
+        marker_45ccab7caf20b91ffc736137a3917d97.bindPopup(popup_a13b36371015cd9384940979c7d58a99)
+        ;
+
+        
+    
+    
+            marker_45ccab7caf20b91ffc736137a3917d97.bindTooltip(
+                `<div>
+                     Calabrian Children's Foundation Incorporated
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_45ccab7caf20b91ffc736137a3917d97.setIcon(icon_08929a51088ae9b8aeb63e5e0e9689ed);
+            
+    
+            L.control.fullscreen(
+                {
+  "position": "topleft",
+  "title": "Full Screen",
+  "titleCancel": "Exit Full Screen",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_91c4223e61737ef72d63bb33665313aa);
+        
+</script>
+</html>
